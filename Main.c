@@ -67,7 +67,8 @@ int main() {
 					printf("File has not been saved, are you sure you want to exit? Type YES to exit\n");
 					fgets(user_input, sizeof(user_input), stdin);
 					//If user enters YES, close file without saving
-					if (strcmp(user_input, "YES") == 0) {
+					if (strcmp(user_input, "YES\n") == 0) {
+						printf("P6_6 Application Closing");
 						return 0;
 					}
 				}
