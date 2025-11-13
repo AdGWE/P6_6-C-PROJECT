@@ -15,33 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ConsoleApplication1\Declaration.c">
+    <ClCompile Include="Declaration.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ConsoleApplication1\Main.c">
+    <ClCompile Include="Main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ConsoleApplication1\Open_file.c">
+    <ClCompile Include="Open_file.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ConsoleApplication1\Save_file.c">
+    <ClCompile Include="Save_file.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ConsoleApplication1\Declaration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ConsoleApplication1\Open_file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ConsoleApplication1\Save_file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\ConsoleApplication1\P6_6-CMS.txt">
+    <Text Include="P6_6-CMS.txt">
       <Filter>Source Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Declaration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Open_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Save_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
