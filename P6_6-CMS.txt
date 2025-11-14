@@ -1,0 +1,26 @@
+ID  Name  Programme  Mark
+2500001  Joan Smith Chen  Computer Science  85.7
+2500002  John Doe  Computer Science  78.2
+2500003  Alice Johnson Lim Computer Science  92.0
+2500004  Bob Brown Doe Computer Science  67.1
+2500005  Charlie Davis  Computer Science  74.5
+2500006  Eve Wilson  Computer Science  88.6
+2500007  Frank Miller  Computer Science  81.7
+2500008  Grace Lee  Computer Science  95.2
+2500009  Henry Taylor  Computer Science  69.1
+2510010  Irene Harris  Computer Science  73.9
+2510011  Jack White  Computer Science  80.0
+2510012  Karen Martin  Computer Science  77.77
+2510013  Larry Thompson  Computer Science  90.8
+2510014  Monica Garcia  Computer Science  84.3
+2510015  Nathan Martinez  Computer Science  76.5
+2510016  Olivia Robinson  Computer Science  89.8
+2510017  Paul Clark  Computer Science  82.2
+2510018  Queen Walker  Computer Science  91.5
+2510019  Ryan Hall  Computer Science  68.1
+2510020  Sarah Allen  Computer Science  75.9
+2510021  Tom Young  Computer Science  83.0
+2510022  Uma Hernandez  Computer Science  86.6
+2510023  Victor King  Computer Science  79.7
+2510024  Wendy Wright  Computer Science  94.5
+2510025  Xavier Lopez  Computer Science  72.4
