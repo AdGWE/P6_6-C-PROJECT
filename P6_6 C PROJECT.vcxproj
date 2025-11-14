@@ -19,18 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ConsoleApplication1\Declaration.c" />
-    <ClCompile Include="..\ConsoleApplication1\Main.c" />
-    <ClCompile Include="..\ConsoleApplication1\Open_file.c" />
-    <ClCompile Include="..\ConsoleApplication1\Save_file.c" />
+    <ClCompile Include="Declaration.c" />
+    <ClCompile Include="Main.c" />
+    <ClCompile Include="Open_file.c" />
+    <ClCompile Include="Save_file.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ConsoleApplication1\Declaration.h" />
-    <ClInclude Include="..\ConsoleApplication1\Open_file.h" />
-    <ClInclude Include="..\ConsoleApplication1\Save_file.h" />
+    <Text Include="P6_6-CMS.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\ConsoleApplication1\P6_6-CMS.txt" />
+    <ClInclude Include="Declaration.h" />
+    <ClInclude Include="Open_file.h" />
+    <ClInclude Include="Save_file.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
