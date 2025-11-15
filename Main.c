@@ -7,7 +7,7 @@
 #include "Open_file.h"
 #include "Declaration.h"
 #include "Save_file.h"
-
+#include "Backup_file.h"
 //Variables
 FILE* file_pointer;
 int main() {
@@ -59,7 +59,7 @@ int main() {
 				file_saved = true;
 			}
 			else if (strcmp(user_input, "BACKUP") == 0) {
-				// INSERT YOUR CODE HERE
+				Backup_File(file_pointer);
 			}
 			else if (strcmp(user_input, "CLOSE") == 0) {
 				//Check if user has saved file yet before closing

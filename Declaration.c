@@ -17,4 +17,5 @@ int Print_Declaration() {
 	printf("Saranesan So V Saravanan\n");
 	printf("He Yong Jie\n");
 	printf("Date : (please insert the date when you submit your group project).\n");
+	return 0;
 }
