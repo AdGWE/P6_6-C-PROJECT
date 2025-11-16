@@ -1,3 +1,6 @@
+Database Name: P6-6 CMS
+Authors: ASHWIN KAVIDASAN, Adriel Goh Wei En, Saranesan So V Saravanan, He Yong Jie
+
 ID  Name  Programme  Mark
 2500001  Joan Smith Chen  Computer Science  85.7
 2500002  John Doe  Computer Science  78.2
@@ -24,3 +27,4 @@ ID  Name  Programme  Mark
 2510023  Victor King  Computer Science  79.7
 2510024  Wendy Wright  Computer Science  94.5
 2510025  Xavier Lopez  Computer Science  72.4
+2502978  ASHWIN KAVIDASAN  IS  97.0

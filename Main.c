@@ -8,6 +8,8 @@
 #include "Declaration.h"
 #include "Save_file.h"
 #include "Backup_file.h"
+#include "insert.h"
+
 //Variables
 FILE* file_pointer;
 int main() {
@@ -42,7 +44,7 @@ int main() {
 				// INSERT YOUR CODE HERE
 			}
 			else if (strcmp(user_input, "INSERT") == 0) {
-				// INSERT YOUR CODE HERE
+				Insert_Record(file_pointer);
 			}
 			else if (strcmp(user_input, "QUERY") == 0) {
 				// INSERT YOUR CODE HERE
