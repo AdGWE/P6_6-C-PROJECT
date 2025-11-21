@@ -18,8 +18,8 @@ FILE* fp;
 int sortBy;
 int order;
 
-//void show_all(FILE FP){}
-void fillArray(int row, int col, char arr[row][col], FILE *fp){
+
+void fillArray(int row, int col, char **arr, FILE *fp){
     char buffer[256];
     int i = 0;
     while (i < row && fgets(buffer, sizeof(buffer), fp)) {
@@ -90,7 +90,31 @@ int sort(const void *first_index, const void *second_index){
 
     return result;
 }
+int validateInput(const char *msg, int min, int max){
+    char buff[256];
+    int value;
+    char *endptr;
+    //printf("TEST IN VALIDATE");
+    while(1){
+        printf("%s",msg);
 
+        //For EOF or READ ERROR
+        if(!fgets(buff,sizeof(buff),stdin))
+            continue;
+
+        //Remove the newline
+        buff[strcspn(buff,"\n")] = 0;
+
+        value = strtol(buff,&endptr,10);
+
+        if(endptr != buff && *endptr == '\0' && value >= min && value <= max){
+            printf("VALUE: %d",value);
+            return (int)value;
+        }
+
+        printf("Invalid Input\n");
+    }
+}
 void displayData(int row, int order_index[], const char *db_name, const char *description){    
     printf("%s\n",db_name);
     printf("%s\n",description);
@@ -108,15 +132,22 @@ void displayData(int row, int order_index[], const char *db_name, const char *de
 
 }
 void show_all(FILE *fp){       
-    size_t row = count_lines(fp); // amount of rows
-    size_t col = 256; //amount of chars per row    
-    char data[row][col];
+    int row = count_lines(fp); // amount of rows
+    int col = 256; //amount of chars per row   
+
+    char **data = malloc(row*sizeof(char*));
+    for(int x=0;x<row;x++){
+        data[x] = malloc(col);
+    }
+
     char *token;
 
     //Sort Sequence
     
-    int order_index[row-TABLE_DESCRIPTION];
-    for(int x=0;x<row-TABLE_DESCRIPTION;x++){
+    int orderSize = row - TABLE_DESCRIPTION;
+    int *order_index = malloc(orderSize*sizeof(int));
+
+    for(int x=0;x<orderSize;x++){
         order_index[x] = x;
         //printf("ORDERINDEX:%d\n",x);
     }
@@ -151,14 +182,14 @@ void show_all(FILE *fp){
        // printf("ID:%d\tNAME:%s\tPROGRAM:%s\tMARK%.1f\n",id[idx],name[idx],program[idx],mark[idx]);
     }
 
-    printf("Sort by: 0-Nothing 1-ID 2-Name 3-Program 4-Mark:\n");
-    scanf("%d", &sortBy);
-
-    printf("Order: 1-Ascending 2-Descending:\n");
-    scanf("%d", &order);
-
-    if(sortBy !=0)
+    sortBy = validateInput("Sort by: 0-Nothing 1-ID 2-Name 3-Program 4-Mark:\n",0,4);
+    
+    
+    if(sortBy != 0){
+        //printf("Sortby:%d",sortBy);
+        order = validateInput("Order: 1-Ascending 2-Descending:\n",1,2);    
         qsort(order_index,row-TABLE_DESCRIPTION,sizeof(int),sort);
+    }
     
     /*
     for(int x=0;x<row-TABLE_DESCRIPTION;x++){
@@ -167,6 +198,11 @@ void show_all(FILE *fp){
     displayData(row-TABLE_DESCRIPTION,order_index,data[0],data[1]);
 
 
-    
+    for(int x=0;x<row;x++)
+        free(data[x]);
+    free(data);
+    free(order_index);
+
+    rewind(fp);
 }        
 
