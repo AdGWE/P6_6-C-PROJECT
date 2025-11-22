@@ -307,18 +307,18 @@ static bool parse_mark(const char *str, float *result) {
 
 // ==================== MAIN INSERT FUNCTION ====================
 
-void Insert_Record(FILE *fp) {
+int Insert_Record(FILE *fp) {
     // Validate file pointer
     if (fp == NULL) {
         printf("Error: File not opened. Cannot insert record.\n");
-        return;
+        return 1;
     }
 
     // Check if file is writable
     long test_pos = ftell(fp);
     if (test_pos < 0) {
         printf("Error: File position error. Cannot insert record.\n");
-        return;
+        return 1;
     }
 
     // Declare variables
@@ -346,7 +346,7 @@ void Insert_Record(FILE *fp) {
         // Allow user to cancel
         if (_stricmp(id, "cancel") == 0 || _stricmp(id, "exit") == 0) {
             printf("Insert operation cancelled.\n");
-            return;
+            return 1;
         }
 
         // Trim any whitespace
@@ -373,7 +373,7 @@ void Insert_Record(FILE *fp) {
 
     if (attempts >= MAX_ATTEMPTS) {
         printf("Too many invalid attempts. Insert operation cancelled.\n");
-        return;
+        return 1;
     }
 
     // ====================2: Get and Validate Name ====================
@@ -390,7 +390,7 @@ void Insert_Record(FILE *fp) {
         // Allow user to cancel
         if (_stricmp(name, "cancel") == 0 || _stricmp(name, "exit") == 0) {
             printf("Insert operation cancelled.\n");
-            return;
+            return 1;
         }
 
         // Trim whitespace
@@ -417,7 +417,7 @@ void Insert_Record(FILE *fp) {
 
     if (attempts >= MAX_ATTEMPTS) {
         printf("Too many invalid attempts. Insert operation cancelled.\n");
-        return;
+        return 1;
     }
 
     // ====================3: Get and Validate Programme ====================
@@ -434,7 +434,7 @@ void Insert_Record(FILE *fp) {
         // Allow user to cancel
         if (_stricmp(programme, "cancel") == 0 || _stricmp(programme, "exit") == 0) {
             printf("Insert operation cancelled.\n");
-            return;
+            return 1;
         }
 
         // Trim whitespace
@@ -460,7 +460,7 @@ void Insert_Record(FILE *fp) {
 
     if (attempts >= MAX_ATTEMPTS) {
         printf("Too many invalid attempts. Insert operation cancelled.\n");
-        return;
+        return 1;
     }
 
     // ====================4: Get and Validate Mark ====================
@@ -477,7 +477,7 @@ void Insert_Record(FILE *fp) {
         // Allow user to cancel
         if (_stricmp(mark_str, "cancel") == 0 || _stricmp(mark_str, "exit") == 0) {
             printf("Insert operation cancelled.\n");
-            return;
+            return 1;
         }
 
         // Trim whitespace
@@ -496,7 +496,7 @@ void Insert_Record(FILE *fp) {
 
     if (attempts >= MAX_ATTEMPTS) {
         printf("Too many invalid attempts. Insert operation cancelled.\n");
-        return;
+        return 1;
     }
 
     // ====================5: Write Record to File ====================
@@ -504,7 +504,7 @@ void Insert_Record(FILE *fp) {
     // Move to end of file
     if (fseek(fp, 0, SEEK_END) != 0) {
         printf("Error: Failed to position file pointer.\n");
-        return;
+        return 1;
     }
 
     // Check if we need to add a newline before our record
@@ -528,7 +528,7 @@ void Insert_Record(FILE *fp) {
     
     if (write_result < 0) {
         printf("Error: Failed to write record to file.\n");
-        return;
+        return 1;
     }
 
     // Force write to disk
@@ -546,4 +546,5 @@ void Insert_Record(FILE *fp) {
     printf("Programme:  %s\n", programme);
     printf("Mark:       %.2f\n", mark);
     printf("====================================\n\n");
+    return 0;
 }

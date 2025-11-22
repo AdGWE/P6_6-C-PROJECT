@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 //Add in header files 
-#include "Open_file.h"
 #include "Declaration.h"
-#include "Save_file.h"
+#include "File_Handling.h"
 #include "Backup_file.h"
 #include "insert.h"
 #include "show_all.h"
@@ -17,7 +17,7 @@ FILE* file_pointer;
 int main() {
 	//Define variables
 	#define MAX_LEN 255
-	bool file_opened = false, file_saved = false, file_closed = false;
+	bool file_opened = false, file_saved = true, file_closed = false;
 	char user_input[MAX_LEN + 1];
 	char *P6_6_filename = "P6_6-CMS.txt";
 	
@@ -28,6 +28,12 @@ int main() {
 		printf("P6_6:");
 		fgets(user_input, sizeof(user_input), stdin);
 		user_input[strcspn(user_input, "\n")] = '\0';
+
+		//Full caps user input
+		for (int i = 0; user_input[i] != '\0'; i++) {
+			user_input[i] = toupper(user_input[i]);
+		}
+
 		if (!file_opened){
 			if (strcmp(user_input,"OPEN") == 0) {
 				file_pointer = Open_File(P6_6_filename,"r+");
@@ -48,7 +54,9 @@ int main() {
 				// INSERT YOUR CODE HERE
 			}
 			else if (strcmp(user_input, "INSERT") == 0) {
-				Insert_Record(file_pointer);
+				if (!Insert_Record(file_pointer)) {
+					file_saved = false;
+				}
 			}
 			else if (strcmp(user_input, "QUERY") == 0) {
 				Query_Record(file_pointer);
@@ -70,18 +78,21 @@ int main() {
 			else if (strcmp(user_input, "CLOSE") == 0) {
 				//Check if user has saved file yet before closing
 				if (file_saved == false) {
-					printf("File has not been saved, are you sure you want to exit? Type YES to exit\n");
+					printf("File has not been saved, are you sure you want to exit? Type YES to exit | Type anything else to cancel\n");
 					fgets(user_input, sizeof(user_input), stdin);
+					user_input[strcspn(user_input, "\n")] = '\0';
 					//If user enters YES, close file without saving
-					if (strcmp(user_input, "YES\n") == 0) {
+					if (strcmp(user_input, "YES") == 0) {
 						Revert_Changes(file_pointer,P6_6_filename);
 						printf("P6_6 Application Closing");
-						return 0;
+						Close_File(file_pointer);
+						goto end_programme;
 					}
 				}
 				else {
 					//Close program if file has been saved 
-					return 0;
+					Close_File(file_pointer);
+					goto end_programme;
 				}
 			}
 			else {
@@ -90,5 +101,6 @@ int main() {
 			}
 		}
 	}
+end_programme:
 	return 0;
 }

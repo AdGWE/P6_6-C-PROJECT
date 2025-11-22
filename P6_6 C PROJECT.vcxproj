@@ -19,20 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Declaration.c" />
-    <ClCompile Include="Main.c" />
-    <ClCompile Include="Open_file.c" />
-    <ClCompile Include="Save_file.c" />
-    <ClCompile Include="Backup_File.c" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="P6_6-CMS.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Declaration.h" />
+    <ClCompile Include="Backup_File.c" />
+    <ClCompile Include="Declaration.c" />
+    <ClCompile Include="insert.c" />
+    <ClCompile Include="Main.c" />
+    <ClCompile Include="query.c" />
+    <ClCompile Include="File_Handling.c" />
+    <ClCompile Include="show_all.c" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Backup_file.h" />
-    <ClInclude Include="Open_file.h" />
-    <ClInclude Include="Save_file.h" />
+    <ClInclude Include="Declaration.h" />
+    <ClInclude Include="insert.h" />
+    <ClInclude Include="query.h" />
+    <ClInclude Include="File_Handling.h" />
+    <ClInclude Include="show_all.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

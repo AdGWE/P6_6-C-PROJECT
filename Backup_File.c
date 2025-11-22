@@ -103,7 +103,6 @@ int Copy_File(FILE* original_file_pointer) {
 	}
 
 	//Free readbuffer & close file
-	printf("Backup successfully saved!\n");
 	goto free_memory;
 
 free_memory:
@@ -112,5 +111,6 @@ free_memory:
 	if (copy_file_pointer != NULL) {
 		fclose(copy_file_pointer);
 	}
+	rewind(original_file_pointer);
 	return return_code;
 }
