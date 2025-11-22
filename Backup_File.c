@@ -68,3 +68,47 @@ free_memory:
 	}
 	return return_code;
 }
+
+
+int Copy_File(FILE* original_file_pointer) {
+	char* temp_filename = "tmp.txt";
+	char* read_buffer = NULL;
+	int return_code = 0;
+	FILE* copy_file_pointer = NULL;
+	size_t read_bytes;
+
+	//Open or create backup file
+	copy_file_pointer = fopen(temp_filename, "wb");
+	if (copy_file_pointer == NULL) {
+		printf("Unable to open backup file!\n");
+		return_code = 1;
+		goto free_memory;
+	}
+	//Allocate read buffer
+	read_buffer = (char*)malloc(BUFFER_SIZE);
+	if (read_buffer == NULL) {
+		printf("Cannot allocate memory to read file!\n");
+		return_code = 1;
+		goto free_memory;
+	}
+
+	// Read from original file and write to backup file
+	while ((read_bytes = fread(read_buffer, 1, BUFFER_SIZE, original_file_pointer)) > 0) {
+		if (fwrite(read_buffer, 1, read_bytes, copy_file_pointer) != read_bytes) {
+			printf("Failed to write to backup file!\n");
+			return_code = 1;
+			goto free_memory;
+		}
+	}
+
+	//Free readbuffer & close file
+	printf("Backup successfully saved!\n");
+	goto free_memory;
+
+free_memory:
+	free(read_buffer);
+	if (copy_file_pointer != NULL) {
+		fclose(copy_file_pointer);
+	}
+	return return_code;
+}
