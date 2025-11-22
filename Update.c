@@ -11,6 +11,7 @@
 #include "Update.h"
 
 //Declare variables
+#define id_len 7
 #define name_len 100
 #define programme_len 100
 #define skip_update "skip"
@@ -32,7 +33,8 @@ void trim(char* str) {
 // Function to normalize spaces in a string (reduce multiple spaces to single space)
 // To compat with show_all format
 void normalize_spaces(char* s) {
-	char* src = s, * dst = s;
+	char* src = s;
+	char* dst = s;
 	int space_count = 0;
 	while (*src) {
 		if (*src == ' ') {
@@ -43,10 +45,10 @@ void normalize_spaces(char* s) {
 		}
 		if (space_count <= 1) {
 			*dst++ = *src;
-			src++;
 		}
-		*dst = '\0';
+		src++;
 	}
+	*dst = '\0';
 }
 
 // Function to count the number of lines from the text file
@@ -69,19 +71,38 @@ static int count_lines(FILE* fp) {
 }
 
 // Function takes in file pointer and user input to update record
-void update_record(FILE* fp, char* user_input, const char *filename) {
+void update_record(FILE* fp) {
 	// Validate file pointer
 	if (!fp) {
 		printf("File failed to open.\n");
 		return;
 	}
 
-	// Extract ID from command
+	// Ask user for ID to update
 	int update_id;
-	if (sscanf(user_input, "UPDATE ID=%d", &update_id) != 1) {
-		printf("Invalid UPDATE command format. Use: UPDATE ID=<ID>\n");
+	char id_input[50];
+	printf("Enter the ID to update (%d digits)", id_len);
+	fgets(id_input, sizeof(id_input), stdin);
+	if (sscanf(id_input, "%d", &update_id) != 1) {
+		printf("CMS: Invalid ID input.\n");
 		return;
 	}
+
+	trim(id_input);
+	// Validate ID length and digits
+	if (strlen(id_input) != id_len) {
+		printf("CMS: ID must be exactly %d digits long.\n", id_len);
+		return;
+	}
+	for (int i = 0; i < id_len; i++) {
+		if (!isdigit(id_input[i])) {
+			printf("CMS: ID must contain only digits.\n");
+			return;
+		}
+	}
+	// Convert to integer now that format is validated
+	update_id = atoi(id_input);
+
 
 	// Load all records into memory
 	// Get total number of records in the file
@@ -223,7 +244,7 @@ void update_record(FILE* fp, char* user_input, const char *filename) {
 
 	// Write back updated records to the file
 	// Rewind file pointer to the beginning of the file
-	fp = freopen(filename, "w", fp);
+	fp = freopen("P6_6-CMS.txt", "w", fp);
 	if (!fp) {
 		printf("CMS: Error reopening file for writing.\n");
 		goto cleanup;
