@@ -9,7 +9,6 @@
 #include "Save_file.h"
 #include "Backup_file.h"
 #include "insert.h"
-#include "query.h"
 
 //Variables
 FILE* file_pointer;
@@ -39,7 +38,7 @@ int main() {
 		}
 		else {
 			if (strcmp(user_input, "SHOW ALL") == 0) {
-				// INSERT YOUR CODE HERE
+				show_all(file_pointer);
 			}
 			else if (strcmp(user_input, "SHOW SUMMARY") == 0) {
 				// INSERT YOUR CODE HERE
