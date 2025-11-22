@@ -1,8 +1,10 @@
 #include <stdio.h>
+char* temp_filename = "tmp.txt";
 
 int Save_File(FILE *file_pointer) {
 	if (file_pointer != NULL) {
 		fclose(file_pointer);
+		remove(temp_filename);
 		printf("File successfully saved!\n");
 	}
 	else
@@ -13,9 +15,6 @@ int Save_File(FILE *file_pointer) {
 }
 
 int Revert_Changes(FILE* file_pointer, char *file_name) {
-	//get name of temp file
-	char* temp_filename = "tmp.txt";
-
 	//Ensure filepointer is closed first before changing file name
 	fclose(file_pointer);
 
