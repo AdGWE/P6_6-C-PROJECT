@@ -51,7 +51,7 @@ int main() {
 				show_all(file_pointer);
 			}
 			else if (strcmp(user_input, "SHOW SUMMARY") == 0) {
-				// INSERT YOUR CODE HERE
+				show_summary(file_pointer);
 			}
 			else if (strcmp(user_input, "INSERT") == 0) {
 				if (!Insert_Record(file_pointer)) {

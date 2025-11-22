@@ -44,8 +44,7 @@ void fillArray(int row, int col, char **arr, FILE *fp){
 
 
         // copy buffer into array row safely
-        snprintf(arr[i], col, "%s", temp); 
-        //printf("LINE[%d]:%s\n",i,arr[i]);
+        snprintf(arr[i], col, "%s", temp);         
         i++;
     }
 
@@ -58,7 +57,7 @@ int count_lines(FILE *fp){
     }
     return rows;
 }
-int sort(const void *first_index, const void *second_index){
+int sort(const void *first_index, const void *second_index){    
     int f = *(int *)first_index;
     int s = *(int *)second_index;
     int result = 0;
@@ -94,7 +93,7 @@ int validateInput(const char *msg, int min, int max){
     char buff[256];
     int value;
     char *endptr;
-    //printf("TEST IN VALIDATE");
+    
     while(1){
         printf("%s",msg);
 
@@ -107,8 +106,7 @@ int validateInput(const char *msg, int min, int max){
 
         value = strtol(buff,&endptr,10);
 
-        if(endptr != buff && *endptr == '\0' && value >= min && value <= max){
-            printf("VALUE: %d",value);
+        if(endptr != buff && *endptr == '\0' && value >= min && value <= max){            
             return (int)value;
         }
 
@@ -127,41 +125,43 @@ void displayData(int row, int order_index[]){
     }
 
     printf("+---------+----------------------+----------------------+-------+\n");
-
 }
-void show_all(FILE *fp){       
-    int row = count_lines(fp); // amount of rows
-    int col = 256; //amount of chars per row   
 
-    char **data = malloc(row*sizeof(char*));
-    for(int x=0;x<row;x++){
-        data[x] = malloc(col);
-    }
-
-    char *token;
-
-    //Sort Sequence
+int init_table(FILE *fp, int* row, char ***data, int** order_index){    
+    int col = 256;
+    *row = count_lines(fp);
     
-    int orderSize = row - TABLE_DESCRIPTION;
-    int *order_index = malloc(orderSize*sizeof(int));
-
-    for(int x=0;x<orderSize;x++){
-        order_index[x] = x;
-        //printf("ORDERINDEX:%d\n",x);
+    //allocate mem
+    *data = malloc((*row)*sizeof(char*));
+    if(*data == NULL)
+        return 0;
+    for(int x=0;x< *row;x++){
+        (*data)[x] = malloc(col);
+        if((*data)[x] == NULL)
+            return 0;
     }
+    
 
+    //reset line and fill content
     rewind(fp);
-    fillArray(row,col,data,fp);
-    //printf("BEFORE FCLOSE");
+    fillArray(*row,col,*data,fp);
     
-        
 
+    //allocate mem for order_index
+    int orderSize = *row - 1;
+    *order_index = malloc(orderSize*sizeof(int));
+    if(*order_index == NULL)
+        return 0;
 
+    //Initialise order_index
+    for(int x=0;x<orderSize;x++)
+        (*order_index)[x] = x;       
+
+    
     //Store each student data
-    for(int x=0; x<row; x++){        
-        //printf("data[%d]:%s\n",x-TABLE_DESCRIPTION,data[x]);
+    for(int x=0; x< *row; x++){                
         int idx = x-TABLE_DESCRIPTION;
-        token = strtok(data[x], "\t");
+        char *token = strtok((*data)[x], "\t");
         if(token) 
             id[idx] = atoi(token);
 
@@ -177,30 +177,107 @@ void show_all(FILE *fp){
         if(token)
             mark[idx] = atof(token);
         
-       // printf("ID:%d\tNAME:%s\tPROGRAM:%s\tMARK%.1f\n",id[idx],name[idx],program[idx],mark[idx]);
+    }
+    
+
+    return 1;
+}
+void free_table(char **data, int row, int *order_index){
+    for(int x=0;x<row;x++)
+        free(data[x]);
+
+    free(data);
+    free(order_index);
+}
+void show_all(FILE *fp){       
+    int row;
+    char **data;
+    int *order_index;
+    
+    //Init table
+    if(!init_table(fp,&row,&data,&order_index)){
+        printf("Failed to retrieve data");
+        return;
     }
 
+    //Sort Data base on user input
     sortBy = validateInput("Sort by: 0-Nothing 1-ID 2-Name 3-Program 4-Mark:\n",0,4);
-    
-    
     if(sortBy != 0){
-        //printf("Sortby:%d",sortBy);
         order = validateInput("Order: 1-Ascending 2-Descending:\n",1,2);    
         qsort(order_index,row-TABLE_DESCRIPTION,sizeof(int),sort);
     }
     
-    /*
-    for(int x=0;x<row-TABLE_DESCRIPTION;x++){
-        printf("orderindex:%d\tProgram:%s\n",order_index[x],program[order_index[x]]);
-    }*/
+    //Display CMS
     displayData(row-TABLE_DESCRIPTION,order_index);
 
-
-    for(int x=0;x<row;x++)
-        free(data[x]);
-    free(data);
-    free(order_index);
-
+    //Free malloc
+    free_table(data,row,order_index);
     rewind(fp);
-}        
+}  
+
+
+void display_summary(int h_index, int l_index){
+    printf("+---------+----------------------+----------------------+-------+\n");
+    printf("|                            HIGHEST                            |\n");
+    printf("+---------+----------------------+----------------------+-------+\n");
+    printf("| ID      | Name                 | Program              |  Mark |\n");
+    printf("+---------+----------------------+----------------------+-------+\n");
+    printf("| %-6d | %-20s | %-20s | %5.1f |\n",
+        id[h_index], name[h_index], program[h_index], mark[h_index]);
+    printf("+---------+----------------------+----------------------+-------+\n\n\n");
+
+    printf("+---------+----------------------+----------------------+-------+\n");
+    printf("|                             LOWEST                            |\n");
+    printf("+---------+----------------------+----------------------+-------+\n");
+    printf("| ID      | Name                 | Program              |  Mark |\n");
+    printf("+---------+----------------------+----------------------+-------+\n");
+    printf("| %-6d | %-20s | %-20s | %5.1f |\n",
+        id[l_index], name[l_index], program[l_index], mark[l_index]);
+    printf("+---------+----------------------+----------------------+-------+\n\n");        
+}
+void displayTotal(int row, int *order_index){          
+    int i = 0;
+    int program_idx[MAX] = {-1};
+    program_idx[0] = 0;    
+    for(int x = 0; x < row; x++) {        
+        if(strcmp(program[order_index[x]],program[order_index[i]])!=0){
+            i++;            
+            program_idx[i] = x;                        
+        }
+    }
+    printf("+---------------------------+\n");
+    printf("|Total Students:            |\n");
+    printf("+---------------------------+\n");
+    for(int x=0;x<=i;x++){
+        int total = x < i?(program_idx[x+1] - program_idx[x]):(row-program_idx[x]);
+        printf("|%-20s:%-6d|\n",program[order_index[program_idx[x]]],total);
+    }
+    printf("+---------------------------+\n");
+
+
+}
+
+void show_summary(FILE *fp){
+    int row;
+    char **data;
+    int *order_index;    
+    //Init table
+    if(!init_table(fp,&row,&data,&order_index)){
+        printf("Failed to retrieve data");
+        return;
+    }    
+    ///get highest mark
+    order = 2;
+    sortBy = 4;    
+    qsort(order_index,row-TABLE_DESCRIPTION,sizeof(int),sort);
+    display_summary(order_index[0],order_index[row-(TABLE_DESCRIPTION+1)]);
+
+    sortBy = 3;
+    qsort(order_index,row-TABLE_DESCRIPTION,sizeof(int),sort);
+    displayTotal(row-TABLE_DESCRIPTION,order_index);
+    free_table(data,row,order_index);
+    rewind(fp);
+
+
+}
 
