@@ -1,2 +1,2 @@
-FILE *Save_File(FILE *file_pointer);
+int Save_File(FILE *file_pointer);
 

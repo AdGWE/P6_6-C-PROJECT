@@ -23,12 +23,14 @@
     <ClCompile Include="Main.c" />
     <ClCompile Include="Open_file.c" />
     <ClCompile Include="Save_file.c" />
+    <ClCompile Include="Backup_File.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="P6_6-CMS.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Declaration.h" />
+    <ClInclude Include="Backup_file.h" />
     <ClInclude Include="Open_file.h" />
     <ClInclude Include="Save_file.h" />
   </ItemGroup>

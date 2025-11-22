@@ -1,0 +1,1 @@
+int Backup_File(FILE *original_file_pointer);

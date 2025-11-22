@@ -7,7 +7,10 @@
 #include "Open_file.h"
 #include "Declaration.h"
 #include "Save_file.h"
-
+#include "Backup_file.h"
+#include "insert.h"
+#include "show_all.h"
+#include "query.h"
 //Variables
 FILE* file_pointer;
 int main() {
@@ -36,16 +39,16 @@ int main() {
 		}
 		else {
 			if (strcmp(user_input, "SHOW ALL") == 0) {
-				// INSERT YOUR CODE HERE
+				show_all(file_pointer);
 			}
 			else if (strcmp(user_input, "SHOW SUMMARY") == 0) {
 				// INSERT YOUR CODE HERE
 			}
 			else if (strcmp(user_input, "INSERT") == 0) {
-				// INSERT YOUR CODE HERE
+				Insert_Record(file_pointer);
 			}
 			else if (strcmp(user_input, "QUERY") == 0) {
-				// INSERT YOUR CODE HERE
+				Query_Record(file_pointer);
 			}
 			else if (strcmp(user_input, "UPDATE") == 0) {
 				// INSERT YOUR CODE HERE
@@ -59,7 +62,7 @@ int main() {
 				file_saved = true;
 			}
 			else if (strcmp(user_input, "BACKUP") == 0) {
-				// INSERT YOUR CODE HERE
+				Backup_File(file_pointer);
 			}
 			else if (strcmp(user_input, "CLOSE") == 0) {
 				//Check if user has saved file yet before closing
