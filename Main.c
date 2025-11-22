@@ -11,6 +11,7 @@
 #include "insert.h"
 #include "show_all.h"
 #include "query.h"
+#include "Update.h"
 //Variables
 FILE* file_pointer;
 int main() {
@@ -61,7 +62,7 @@ int main() {
 				Query_Record(file_pointer);
 			}
 			else if (strcmp(user_input, "UPDATE") == 0) {
-				// INSERT YOUR CODE HERE
+				update_record(file_pointer);
 			}
 			else if (strcmp(user_input, "DELETE") == 0) {
 				// INSERT YOUR CODE HERE
