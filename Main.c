@@ -62,7 +62,9 @@ int main() {
 				Query_Record(file_pointer);
 			}
 			else if (strcmp(user_input, "UPDATE") == 0) {
-				update_record(file_pointer);
+				if (!update_record(file_pointer)) {
+				file_saved = false;
+				}
 			}
 			else if (strcmp(user_input, "DELETE") == 0) {
 				// INSERT YOUR CODE HERE
