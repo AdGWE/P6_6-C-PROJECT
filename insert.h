@@ -1,2 +1,2 @@
 #include <stdio.h>
-void Insert_Record(FILE *fp);
+int Insert_Record(FILE *fp);
