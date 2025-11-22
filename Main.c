@@ -33,7 +33,7 @@ int main() {
 				file_pointer = Open_File(P6_6_filename,"r+");
 				if (file_pointer != NULL) {
 					file_opened = true;
-					Copy_File(file_pointer);
+					//Copy_File(file_pointer);
 				}
 			} 
 			else {
