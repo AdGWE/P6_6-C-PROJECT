@@ -115,9 +115,7 @@ int validateInput(const char *msg, int min, int max){
         printf("Invalid Input\n");
     }
 }
-void displayData(int row, int order_index[], const char *db_name, const char *description){    
-    printf("%s\n",db_name);
-    printf("%s\n",description);
+void displayData(int row, int order_index[]){    
     printf("+---------+----------------------+----------------------+-------+\n");
     printf("| ID      | Name                 | Program               | Mark |\n");
     printf("+---------+----------------------+----------------------+-------+\n");
@@ -195,7 +193,7 @@ void show_all(FILE *fp){
     for(int x=0;x<row-TABLE_DESCRIPTION;x++){
         printf("orderindex:%d\tProgram:%s\n",order_index[x],program[order_index[x]]);
     }*/
-    displayData(row-TABLE_DESCRIPTION,order_index,data[0],data[1]);
+    displayData(row-TABLE_DESCRIPTION,order_index);
 
 
     for(int x=0;x<row;x++)
