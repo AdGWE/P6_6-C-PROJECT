@@ -9,6 +9,7 @@
 #include "Save_file.h"
 #include "Backup_file.h"
 #include "insert.h"
+#include "query.h"
 
 //Variables
 FILE* file_pointer;
@@ -47,7 +48,7 @@ int main() {
 				Insert_Record(file_pointer);
 			}
 			else if (strcmp(user_input, "QUERY") == 0) {
-				// INSERT YOUR CODE HERE
+				Query_Record(file_pointer);
 			}
 			else if (strcmp(user_input, "UPDATE") == 0) {
 				// INSERT YOUR CODE HERE
