@@ -18,7 +18,8 @@ int main() {
 	#define MAX_LEN 255
 	bool file_opened = false, file_saved = false, file_closed = false;
 	char user_input[MAX_LEN + 1];
-
+	char *P6_6_filename = "P6_6-CMS.txt";
+	
 	//Print plagarism declaration when starting program
 	Print_Declaration();
 	while (!file_closed){
@@ -28,9 +29,10 @@ int main() {
 		user_input[strcspn(user_input, "\n")] = '\0';
 		if (!file_opened){
 			if (strcmp(user_input,"OPEN") == 0) {
-				file_pointer = Open_File("P6_6-CMS.txt","r+");
+				file_pointer = Open_File(P6_6_filename,"r+");
 				if (file_pointer != NULL) {
 					file_opened = true;
+					Copy_File(file_pointer);
 				}
 			} 
 			else {
@@ -71,6 +73,7 @@ int main() {
 					fgets(user_input, sizeof(user_input), stdin);
 					//If user enters YES, close file without saving
 					if (strcmp(user_input, "YES\n") == 0) {
+						Revert_Changes(file_pointer,P6_6_filename);
 						printf("P6_6 Application Closing");
 						return 0;
 					}
