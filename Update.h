@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-void update_record(FILE* fp, char* user_input, const char* filename);
+void update_record(FILE* fp);
 
 #endif
-#pragma once
+
