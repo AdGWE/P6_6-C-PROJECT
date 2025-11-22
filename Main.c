@@ -54,7 +54,7 @@ int main() {
 				Query_Record(file_pointer);
 			}
 			else if (strcmp(user_input, "UPDATE") == 0) {
-				update_record(file_pointer, user_input, P6_6_filename);
+				update_record(file_pointer);
 			}
 			else if (strcmp(user_input, "DELETE") == 0) {
 				// INSERT YOUR CODE HERE
