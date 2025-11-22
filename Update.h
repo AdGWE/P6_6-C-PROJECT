@@ -3,7 +3,8 @@
 
 #include <stdio.h>
 
-void update_record(FILE* fp);
+int update_record(FILE* fp);
 
 #endif
+
 
