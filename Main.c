@@ -9,7 +9,8 @@
 #include "Save_file.h"
 #include "Backup_file.h"
 #include "insert.h"
-
+#include "show_all.h"
+#include "query.h"
 //Variables
 FILE* file_pointer;
 int main() {
