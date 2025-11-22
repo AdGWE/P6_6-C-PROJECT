@@ -4,7 +4,7 @@ Authors: Ashwin Kavidasan, Adriel Goh Wei En, Saranesan So V Saravanan, He Yong 
 ID  Name  Programme  Mark
 2500001  Joan Smith Chen  Computer Science  85.7
 2500002  John Doe  Computer Science  78.2
-2500003  Alice Johnson  Lim Computer Science  92.0
+2500003  Alice Johnson Lim  Computer Science  92.0
 2500004  Bob Brown Doe  Computer Science  67.1
 2500005  Charlie Davis  Computer Science  74.5
 2500006  Eve Wilson  Computer Science  88.6
