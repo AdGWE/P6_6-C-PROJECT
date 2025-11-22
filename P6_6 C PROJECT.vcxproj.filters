@@ -27,6 +27,18 @@
     <ClCompile Include="Save_file.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Backup_File.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="insert.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="query.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="show_all.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="P6_6-CMS.txt">
@@ -41,6 +53,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Save_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Backup_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="insert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="query.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="show_all.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,10 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Declaration.c" />
+    <ClCompile Include="insert.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="Open_file.c" />
+    <ClCompile Include="query.c" />
     <ClCompile Include="Save_file.c" />
     <ClCompile Include="Backup_File.c" />
+    <ClCompile Include="show_all.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="P6_6-CMS.txt" />
@@ -31,8 +34,11 @@
   <ItemGroup>
     <ClInclude Include="Declaration.h" />
     <ClInclude Include="Backup_file.h" />
+    <ClInclude Include="insert.h" />
     <ClInclude Include="Open_file.h" />
+    <ClInclude Include="query.h" />
     <ClInclude Include="Save_file.h" />
+    <ClInclude Include="show_all.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
