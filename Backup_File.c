@@ -63,6 +63,7 @@ int Backup_File(FILE *original_file_pointer) {
 free_memory:
 	free(backup_file_name);
 	free(read_buffer);
+	rewind(original_file_pointer);
 	if (backup_file_pointer != NULL) {
 		fclose(backup_file_pointer);
 	}
@@ -107,6 +108,7 @@ int Copy_File(FILE* original_file_pointer) {
 
 free_memory:
 	free(read_buffer);
+	rewind(original_file_pointer);
 	if (copy_file_pointer != NULL) {
 		fclose(copy_file_pointer);
 	}
