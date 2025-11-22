@@ -29,6 +29,7 @@
     <ClCompile Include="query.c" />
     <ClCompile Include="File_Handling.c" />
     <ClCompile Include="show_all.c" />
+    <ClCompile Include="Update.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backup_file.h" />
@@ -37,6 +38,7 @@
     <ClInclude Include="query.h" />
     <ClInclude Include="File_Handling.h" />
     <ClInclude Include="show_all.h" />
+    <ClInclude Include="Update.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
