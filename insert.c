@@ -344,7 +344,7 @@ void Insert_Record(FILE *fp) {
         }
 
         // Allow user to cancel
-        if (strcasecmp(id, "cancel") == 0 || strcasecmp(id, "exit") == 0) {
+        if (_stricmp(id, "cancel") == 0 || _stricmp(id, "exit") == 0) {
             printf("Insert operation cancelled.\n");
             return;
         }
@@ -388,7 +388,7 @@ void Insert_Record(FILE *fp) {
         }
 
         // Allow user to cancel
-        if (strcasecmp(name, "cancel") == 0 || strcasecmp(name, "exit") == 0) {
+        if (_stricmp(name, "cancel") == 0 || _stricmp(name, "exit") == 0) {
             printf("Insert operation cancelled.\n");
             return;
         }
@@ -432,7 +432,7 @@ void Insert_Record(FILE *fp) {
         }
 
         // Allow user to cancel
-        if (strcasecmp(programme, "cancel") == 0 || strcasecmp(programme, "exit") == 0) {
+        if (_stricmp(programme, "cancel") == 0 || _stricmp(programme, "exit") == 0) {
             printf("Insert operation cancelled.\n");
             return;
         }
@@ -475,7 +475,7 @@ void Insert_Record(FILE *fp) {
         }
 
         // Allow user to cancel
-        if (strcasecmp(mark_str, "cancel") == 0 || strcasecmp(mark_str, "exit") == 0) {
+        if (_stricmp(mark_str, "cancel") == 0 || _stricmp(mark_str, "exit") == 0) {
             printf("Insert operation cancelled.\n");
             return;
         }

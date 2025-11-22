@@ -29,3 +29,4 @@ ID  Name  Programme  Mark
 2510025  Xavier Lopez  Computer Science  72.4
 2502978  Ashwin Kavidasan  Info Security  93.00
 1234567  DEE  NUTS  22.00
+2312999  KHABIB NURMAGOMEDOV  PHYSIO  100.00
