@@ -2,276 +2,218 @@
 #include <stdio.h>
 // For string functions
 #include <string.h>
-// For dynamic memory allocation
-#include <stdlib.h>
-// For character type functions
+// For string validations
 #include <ctype.h>
+// For memory allocation
+#include <stdlib.h>
 
-// Include header file
+// Header library
 #include "Update.h"
 
-//Declare variables
-#define id_len 7
-#define name_len 100
-#define programme_len 100
-#define skip_update "skip"
- 
-// Function to trim whitespace from both ends of string
-void trim(char* str) {
-	int len = strlen(str);
+// Buffer size for each line in student file
+#define LINE_MAX 512
+// for student ID to be 7 digits
+#define ID_LEN 7
 
-	// Trim trailing spaces
-	while (len > 0 && isspace(str[len - 1])) str[--len] = '\0';
-
-	// Trim leading spaces
-	char* start = str;
-	while (*start && isspace(*start)) start++;
-
-	if (start != str) memmove(str, start, strlen(start) + 1);
+// Helper function to remove leading and trailing spaces
+static void trim(char* s) {
+    // Does nothing for NULL pointer
+    if (!s) {
+        return;
+    }
+    char* start = s;
+    while (*start && isspace((unsigned char)*start)) {
+        start++;
+    }
+    // Return empty string if all spaces
+    if (*start == '\0') { 
+        s[0] = '\0'; return; 
+    }
+    char* end = start + strlen(start) - 1;
+    while (end > start && isspace((unsigned char)*end)) {
+        end--;
+    }
+    *(end + 1) = '\0';
+    if (start != s) {
+        memmove(s, start, strlen(start) + 1);
+    }
 }
 
-// Function to normalize spaces in a string (reduce multiple spaces to single space)
-// To compat with show_all format
-void normalize_spaces(char* s) {
-	char* src = s;
-	char* dst = s;
-	int space_count = 0;
-	while (*src) {
-		if (*src == ' ') {
-			space_count++;
-		}
-		else {
-			space_count = 0;
-		}
-		if (space_count <= 1) {
-			*dst++ = *src;
-		}
-		src++;
-	}
-	*dst = '\0';
+// Function to check if ID is valid (7 digits)
+static int valid_id(const char* s) {
+    if (strlen(s) != 7) {
+        return 0;
+    }
+    for (int i = 0; i < 7; i++) {
+        if (!isdigit(s[i])) {
+            return 0;
+        }
+    }      
+    return 1;
 }
 
-// Function to count the number of lines from the text file
-static int count_lines(FILE* fp) {
-	int lines = 0;
-	// Buffer to store each line
-	char buffer[256];
-
-	// Set file position to the beginning of the file
-	rewind(fp);
-
-	// Iterate through each line and count
-	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-		lines++;
-	}
-
-	// Reset file position to the beginning of the file
-	rewind(fp);
-	return lines;
+// Buffer flow protection to read line safely from input
+static int read_line(char* buf, size_t size) {
+    if (!fgets(buf, (int)size, stdin)) {
+        return 0;
+    }
+    buf[strcspn(buf, "\n")] = '\0';
+    return 1;
 }
 
-// Function takes in file pointer and user input to update record
-void update_record(FILE* fp) {
-	// Validate file pointer
-	if (!fp) {
-		printf("File failed to open.\n");
-		return;
-	}
+// Validation for Mark value and convert string to float
+static int parse_mark(const char* s, float* m) {
+    char* end;
+    float v = strtof(s, &end);
+    while (*end && isspace((unsigned char)*end)) {
+        end++;
+    }
+    if (*end != '\0') {
+        return 0;
+    }
+    if (v < 0 || v > 100) {
+        return 0;
+    }
+    *m = v;
+    return 1;
+}
 
-	// Ask user for ID to update
-	int update_id;
-	char id_input[50];
-	printf("Enter the ID to update (%d digits)", id_len);
-	fgets(id_input, sizeof(id_input), stdin);
-	if (sscanf(id_input, "%d", &update_id) != 1) {
-		printf("CMS: Invalid ID input.\n");
-		return;
-	}
+// ---- MAIN UPDATE FUNCTION ----
+int update_record(FILE* fp) {
 
-	trim(id_input);
-	// Validate ID length and digits
-	if (strlen(id_input) != id_len) {
-		printf("CMS: ID must be exactly %d digits long.\n", id_len);
-		return;
-	}
-	for (int i = 0; i < id_len; i++) {
-		if (!isdigit(id_input[i])) {
-			printf("CMS: ID must contain only digits.\n");
-			return;
-		}
-	}
-	// Convert to integer now that format is validated
-	update_id = atoi(id_input);
+    if (fp == NULL) {
+        printf("Error: File not opened.\n");
+        return;
+    }
 
+    char id[50];
+    char line[LINE_MAX];
+    long pos_before_record = -1;
+    int found = 0;
 
-	// Load all records into memory
-	// Get total number of records in the file
-	int total_lines = count_lines(fp);
-	// Exclude the header/description lines
-	int total_records = total_lines - 4;
+    printf("\n--- UPDATE Student Record ---\n");
+    printf("Enter Student ID to update: ");
+    read_line(id, sizeof(id));
+    trim(id);
 
-	if (total_records <= 0) {
-		printf("CMS: No records available to update.\n");
-		return;
-	}
+    if (!valid_id(id)) {
+        printf("Invalid ID. Must be exactly 7 digits.\n");
+        // Failed
+        return 1;
+    }
 
-	// Read all records into memory as normal arrays
-	int* id = malloc(total_records * sizeof(int));
-	char (*name)[name_len] = malloc(total_records * sizeof(*name));
-	char (*programme)[programme_len] = malloc(total_records * sizeof(*programme));
-	float* mark = malloc(total_records * sizeof(float));
+    // Move to beginning and locate the record
+    rewind(fp);
 
-	// Rewind file pointer to the beginning of the file
-	rewind(fp);
+    // Skip header lines (same behaviour as show_all)
+    while (fgets(line, sizeof(line), fp)) {
+        if (strstr(line, "ID") && strstr(line, "Name") && strstr(line, "Program"))
+            break;
+    }
 
-	// Skip header/description lines
-	char line[256];
-	for (int i = 0; i < 4; i++) {
-		fgets(line, sizeof(line), fp);
-	}
+    // Search record
+    while (1) {
+        long pos = ftell(fp);
 
-	// Counter to track number of records read
-	int count = 0;
-	
-	// Read one record at a time and store in the corresponding arrays
-	while (count < total_records && fgets(line, sizeof(line), fp)) {
-		// Remove newline character
-		line[strcspn(line, "\n")] = 0;
+        if (!fgets(line, sizeof(line), fp)) break;
+        if (strlen(line) < 7) continue;
 
-		// Pointer to traverse the line
-		char* p = line;
+        char rec_id[20];
+        sscanf(line, "%7s", rec_id);
 
-		// Field 1: ID
-		char* id_token = p;
-		// Move until first occurence of double spaces
-		while (*p && !(*p == ' ' && p[1] == ' ')) p++;
-		// If end of line reached, skip to next line
-		if (!*p) continue;
-		// Terminate the token
-		*p = '\0';
-		// Move pointer past the double spaces
-		p += 2;
-		// Skip any additional spaces
-		while (*p == ' ') p++;
+        if (strcmp(rec_id, id) == 0) {
+            found = 1;
+            pos_before_record = pos;
+            break;
+        }
+    }
 
-		// Field 2: Name
-		char* name_token = p;
-		while (*p && !(*p == ' ' && p[1] == ' ')) p++;
-		if (!*p) continue;
-		*p = '\0';
-		p += 2;
-		while (*p == ' ') p++;
+    if (!found) {
+        printf("Record with ID %s not found.\n", id);
+        rewind(fp);
+        return 1;
+    }
 
-		// Field 3: Programme
-		char* programme_token = p;
-		while (*p && !(*p == ' ' && p[1] == ' ')) p++;
-		if (!*p) continue;
-		*p = '\0';
-		p += 2;
-		while (*p == ' ') p++;
+    // Extract existing fields
+    char old_name[200], old_prog[200], * ptr;
+    float old_mark;
 
-		// Field 4: Mark
-		char* mark_token = p;
+    strcpy(old_name, "");
+    strcpy(old_prog, "");
 
-		id[count] = atoi(id_token);
-		strcpy(name[count], name_token);
-		strcpy(programme[count], programme_token);
-		mark[count] = atof(mark_token);
-		// Increase count if exactly four fileds are read
-		count++;
-	}
+    ptr = line + 7;
+    while (*ptr == ' ') ptr++;
 
+    char copy[LINE_MAX];
+    strcpy(copy, ptr);
 
-	// Array index for updating record
-	int index = -1;
-	// Iterate through ID array to find matching ID
-	for (int i = 0; i < count; i++) {
-		if (id[i] == update_id) {
-			index = i;
-			break;
-		}
-	}
+    char* last_space = strrchr(copy, ' ');
+    old_mark = atof(last_space + 1);
+    *last_space = '\0';
 
-	if (index == -1) {
-		printf("CMS: The record with ID=%d does not exist.\n", update_id);
-		goto cleanup;
-	}
+    char* prog_start = NULL;
+    for (int i = (int)strlen(copy) - 1; i > 0; i--) {
+        if (copy[i] == ' ' && copy[i - 1] == ' ') {
+            prog_start = &copy[i];
+            while (*prog_start == ' ') prog_start++;
+            copy[i] = '\0';
+            break;
+        }
+    }
 
-	// Ask user for new values
-	char input[256];
-	printf("Type 'skip' to keep the old value.\n");
-	// New name value
-	printf("Enter new Name: ");
-	fgets(input, sizeof(input), stdin);
-	// Remove newline
-	input[strcspn(input, "\n")] = 0;
-	trim(input);
-	normalize_spaces(input);
-	if (strcmp(input, skip_update) != 0) {
-		strcpy(name[index], input);
-	}
+    if (prog_start == NULL) {
+        printf("Corrupted record format.\n");
+        rewind(fp);
+        return 1;
+    }
 
-	// New programme value
-	printf("Enter new Programme: ");
-	fgets(input, sizeof(input), stdin);
-	// Remove newline
-	input[strcspn(input, "\n")] = 0;
-	trim(input);
-	normalize_spaces(input);
-	if (strcmp(input, skip_update) != 0) {
-		strcpy(programme[index], input);
-	}
-	
+    strcpy(old_name, copy);
+    strcpy(old_prog, prog_start);
 
-	// New mark value
-	printf("Enter new Mark: ");
-	fgets(input, sizeof(input), stdin);
-	// Remove newline
-	input[strcspn(input, "\n")] = 0;
-	trim(input);
+    // --- Display old data ---
+    printf("\nCurrent Record:\n");
+    printf("ID       : %s\n", id);
+    printf("Name     : %s\n", old_name);
+    printf("Programme: %s\n", old_prog);
+    printf("Mark     : %.2f\n", old_mark);
 
-	// Validate and update mark
-	if (strcmp(input, skip_update) != 0) {
-		char* endptr;
-		float new_mark = strtof(input, &endptr);
-		if (endptr == input) {
-			printf("CMS: Invalid mark input. Keeping old value.\n");
-		}
-		else {
-			mark[index] = new_mark;
-		}
-	}
+    // --- Prompt new information ---
+    char new_name[200], new_prog[200], mark_str[50];
+    float new_mark;
 
-	// Write back updated records to the file
-	// Rewind file pointer to the beginning of the file
-	fp = freopen("P6_6-CMS.txt", "w", fp);
-	if (!fp) {
-		printf("CMS: Error reopening file for writing.\n");
-		goto cleanup;
-	}
+    printf("\nEnter NEW Name (leave blank to keep existing): ");
+    read_line(new_name, sizeof(new_name));
+    trim(new_name);
+    if (strlen(new_name) == 0) strcpy(new_name, old_name);
 
-	// Write back header/description lines
-	fprintf(fp, "Database Name: P6-6 CMS\n");
-	fprintf(fp, "Authors: Ashwin Kavidasan, Adriel Goh Wei En, Saranesan So V Saravanan, He Yong Jie\n");
-	fprintf(fp, "\n");
-	fprintf(fp, "ID  Name  Programme  Mark\n");
+    printf("Enter NEW Programme (leave blank to keep existing): ");
+    read_line(new_prog, sizeof(new_prog));
+    trim(new_prog);
+    if (strlen(new_prog) == 0) strcpy(new_prog, old_prog);
 
-	// Iterate through all records and write to file
-	for (int i = 0; i < count; i++) {
-		fprintf(fp, "%d  %s  %s  %.2f\n",
-			id[i],
-			name[i],
-			programme[i],
-			mark[i]);
-	}
+    printf("Enter NEW Mark (0-100, leave blank to keep existing): ");
+    read_line(mark_str, sizeof(mark_str));
+    trim(mark_str);
+    if (strlen(mark_str) == 0) new_mark = old_mark;
+    else if (!parse_mark(mark_str, &new_mark)) {
+        printf("Invalid mark.\n");
+        rewind(fp);
+        return 1;
+    }
 
-	printf("CMS: Record with ID=%d has been updated successfully.\n", update_id);
+    // ---- WRITE UPDATED RECORD BACK TO FILE ----
+    fseek(fp, pos_before_record, SEEK_SET);
+    fprintf(fp, "%s  %s  %s  %.2f\n", id, new_name, new_prog, new_mark);
 
-// Free allocated memory
-cleanup:
+    fflush(fp);
+    rewind(fp);
 
-	free(id);
-	free(name);
-	free(programme);
-	free(mark);
+    printf("\n=== Record Successfully Updated ===\n");
+    printf("ID       : %s\n", id);
+    printf("Name     : %s\n", new_name);
+    printf("Programme: %s\n", new_prog);
+    printf("Mark     : %.2f\n", new_mark);
+    printf("===================================\n\n");
+
+    return 0;
 }
