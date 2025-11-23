@@ -23,7 +23,7 @@ static void trim(char* string) {
     if (!string) {
         return;
     }
-    // Skip leading space
+    // Find first non-space character
     char* start = string;
     while (*start && isspace((unsigned char)*start)) {
         start++;
@@ -101,8 +101,7 @@ int update_record(FILE* fp) {
         printf("Error: File not opened. Unable to update.\n");
         return 1;
     }
-
-    // Variable declaration 
+ 
     char id[50];
     char line[LINE_MAX];
     // Where to overwrite
@@ -124,13 +123,14 @@ int update_record(FILE* fp) {
         return 1;
     }
 
-    // Move to start of file
+    // Move pointer to start of file
     rewind(fp);
 
     // Skip header lines
     while (fgets(line, sizeof(line), fp)) {
-        if (strstr(line, "ID") && strstr(line, "Name") && strstr(line, "Program"))
+        if (strstr(line, "ID") && strstr(line, "Name") && strstr(line, "Programme")) {
             break;
+        }
     }
 
     // Search record
@@ -273,7 +273,7 @@ int update_record(FILE* fp) {
     // Write updated record back to file
     fseek(fp, pos_before_record, SEEK_SET);
     // Overwrite old data in place
-    fprintf(fp, "%s  %s  %s  %.2f\n", id, new_name, new_prog, new_mark);
+    fprintf(fp, "%s  %s  %s  %.2f", id, new_name, new_prog, new_mark);
 
     // Ensure changes are saved.
     fflush(fp);
