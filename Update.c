@@ -201,13 +201,14 @@ int update_record(FILE* fp) {
     char* start_prog = NULL;
     for (int i = strlen(copy) - 1; i > 0; i--) {
         if (copy[i] == ' ' && copy[i - 1] == ' ') {
+            // Terminate name before the two spaces
+            copy[i - 1] = '\0';
             // Skip the spaces to find start of programme
-            start_prog = &copy[i];       
+            start_prog = &copy[i];
+            // Programme begins at first non-space after position i
             while (*start_prog == ' ') {
                 start_prog++;
             }
-            // Terminate name before the two spaces
-            copy[i] = '\0';
             break;
         }
     }
@@ -222,6 +223,9 @@ int update_record(FILE* fp) {
     // Store value of name and programme
     strcpy(old_name, copy);
     strcpy(old_prog, start_prog);
+
+    trim(old_name);
+    trim(old_prog);
 
     // Display current data
     printf("\nCurrent Record:\n");
@@ -262,6 +266,9 @@ int update_record(FILE* fp) {
         rewind(fp);
         return 1;
     }
+
+    trim(new_name);
+    trim(new_prog);
 
     // Write updated record back to file
     fseek(fp, pos_before_record, SEEK_SET);
