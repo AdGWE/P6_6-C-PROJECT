@@ -12,6 +12,7 @@
 #include "show_all.h"
 #include "query.h"
 #include "Update.h"
+#include "Delete.h"
 //Variables
 FILE* file_pointer;
 int main() {
@@ -63,11 +64,13 @@ int main() {
 			}
 			else if (strcmp(user_input, "UPDATE") == 0) {
 				if (!update_record(file_pointer)) {
-				file_saved = false;
+					file_saved = false;
 				}
 			}
 			else if (strcmp(user_input, "DELETE") == 0) {
-				// INSERT YOUR CODE HERE
+				if (!delete_record(file_pointer)) {
+					file_saved = false;
+				}
 			}
 			else if (strcmp(user_input, "SAVE") == 0) {
 				//Call save file function
