@@ -17,6 +17,7 @@
 #define MAX_NAME_LEN 100
 #define MAX_PROG_LEN 100
 
+
 // Helper function to remove leading and trailing spaces
 static void trim(char* string) {
     // Does nothing for NULL pointer
@@ -92,7 +93,7 @@ static int parse_mark(const char* string, float* mark) {
     return 1;
 }
 
-// ---- MAIN UPDATE FUNCTION ----
+
 // Return 1 for any failure, and 0 for success
 int update_record(FILE* fp) {
 
@@ -101,14 +102,8 @@ int update_record(FILE* fp) {
         printf("Error: File not opened. Unable to update.\n");
         return 1;
     }
- 
-    char id[50];
-    char line[LINE_MAX];
-    // Where to overwrite
-    long pos_before_record = -1;
-    // Counter to check if record exists
-    int found = 0;
 
+    char id[50];
     // Prompt user for ID to update
     printf("\n--- Update Student Record ---\n");
     printf("Enter Student ID to update: ");
@@ -126,27 +121,40 @@ int update_record(FILE* fp) {
     // Move pointer to start of file
     rewind(fp);
 
-    // Skip header lines
+    // Create temporary file
+    FILE* temp = tmpfile();
+    if (!temp) {
+        printf("Error: Unable to create temporary storage.\n");
+        return 1;
+    }
+ 
+    char line[LINE_MAX];
+    // Counter to check if record exists
+    int found = 0;
+
+    // Copy anything before header line
     while (fgets(line, sizeof(line), fp)) {
+        // Iterate the lines till header line
         if (strstr(line, "ID") && strstr(line, "Name") && strstr(line, "Programme")) {
             break;
         }
+        fputs(line, temp);
     }
 
-    // Search record
-    while (1) {
-        // Start of current line
-        long pos = ftell(fp);
+    // Copy the field header
+    fputs(line, temp);
 
-        // Stops when reach the end of file
-        if (!fgets(line, sizeof(line), fp)) {
-            break;
-        }
+    // Variables to store old data
+    char old_name[MAX_NAME_LEN];
+    char old_prog[MAX_PROG_LEN];
+    float old_mark;
 
-        // Skip blank / invalid lines
-        if (strlen(line) < 7) {
+    // Process student records
+    while (fgets(line, sizeof(line), fp)) {
+
+        // Ignore blank lines
+        if (strlen(line) < ID_LEN)
             continue;
-        }
 
         // Extract the 7 digit IDs from the record line
         char rec_id[ID_LEN + 1];
@@ -155,79 +163,72 @@ int update_record(FILE* fp) {
         // Store file position if value matches.
         if (strcmp(rec_id, id) == 0) {
             found = 1;
-            pos_before_record = pos;
+
+            // Extract fields from line
+            char* ptr = line + ID_LEN;
+            // Skip spaces after ID
+            while (*ptr == ' ') {
+                ptr++;
+            }
+
+            // copy rest of the line after ID
+            char copy[LINE_MAX];
+            strcpy(copy, ptr);
+
+            // Extract value of mark
+            // Find last occurence of space, which is always before mark
+            char* last_space = strrchr(copy, ' ');
+            // Convert string after last space to float
+            old_mark = atof(last_space + 1);
+            // Cut value of mark from record line
+            *last_space = '\0';
+
+            // Extract value of programme by searching backwards
+            // Split remaining string into name (left) and programme (right)
+            char* start_prog = NULL;
+            for (int i = strlen(copy) - 1; i > 0; i--) {
+                if (copy[i] == ' ' && copy[i - 1] == ' ') {
+                    // Terminate name before the two spaces
+                    copy[i - 1] = '\0';
+                    // Skip the spaces to find start of programme
+                    start_prog = &copy[i];
+                    // Programme begins at first non-space after position i
+                    while (*start_prog == ' ') {
+                        start_prog++;
+                    }
+                    break;
+                }
+            }
+
+            // Validate data format
+            if (!start_prog) {
+                printf("Record format corrupted.\n");
+                fclose(temp);
+                rewind(fp);
+                return 1;
+            }
+
+            // Store value of name and programme
+            strcpy(old_name, copy);
+            strcpy(old_prog, start_prog);
+
+            trim(old_name);
+            trim(old_prog);
+
             break;
         }
+          
     }
 
     // If record not found
     if (!found) {
         printf("Record with ID %s not found.\n", id);
+        fclose(temp);
         rewind(fp);
         return 1;
     }
 
-    // Extract existing fields from record lines stored
-    char old_name[MAX_NAME_LEN];
-    char old_prog[MAX_PROG_LEN];
-    float old_mark;
-    char* ptr;
-
-    strcpy(old_name, "");
-    strcpy(old_prog, "");
-
-    // Stores current pointer -> end of ID
-    ptr = line + ID_LEN;
-
-    // Skip spaces after ID
-    while (*ptr == ' ') {
-        ptr++;
-    }
-
-    // Copy and store the rest of the fields
-    char copy[LINE_MAX];
-    strcpy(copy, ptr);
-
-    // Extract value of mark
-    // Find last occurence of space, which is always before mark
-    char* last_space = strrchr(copy, ' ');
-    // Convert string after last space to float
-    old_mark = atof(last_space + 1);
-    // Cut value of mark from record line
-    *last_space = '\0';
-
-    // Extract value of programme by searching backwards
-    // Split remaining string into name (left) and programme (right)
-    char* start_prog = NULL;
-    for (int i = strlen(copy) - 1; i > 0; i--) {
-        if (copy[i] == ' ' && copy[i - 1] == ' ') {
-            // Terminate name before the two spaces
-            copy[i - 1] = '\0';
-            // Skip the spaces to find start of programme
-            start_prog = &copy[i];
-            // Programme begins at first non-space after position i
-            while (*start_prog == ' ') {
-                start_prog++;
-            }
-            break;
-        }
-    }
-
-    // Validate data format
-    if (!start_prog) {
-        printf("Record format corrupted.\n");
-        rewind(fp);
-        return 1;
-    }
-
-    // Store value of name and programme
-    strcpy(old_name, copy);
-    strcpy(old_prog, start_prog);
-
-    trim(old_name);
-    trim(old_prog);
-
-    // Display current data
+    // Display confirmation prompt for current data
     printf("\nCurrent Record:\n");
     printf("ID       : %s\n", id);
     printf("Name     : %s\n", old_name);
@@ -263,24 +264,58 @@ int update_record(FILE* fp) {
     // Validate value of mark
     else if (!parse_mark(new_mark_str, &new_mark)) {
         printf("Invalid mark.\n");
+        fclose(temp);
         rewind(fp);
         return 1;
     }
 
-    trim(new_name);
-    trim(new_prog);
 
-    // Write updated record back to file
-    fseek(fp, pos_before_record, SEEK_SET);
-    // Overwrite old data in place
-    fprintf(fp, "%s  %s  %s  %.2f", id, new_name, new_prog, new_mark);
+    // Back to start of file
+    rewind(fp);
+
+    // Skip pre-header and header again in original file
+    while (fgets(line, sizeof(line), fp)) {
+        if (strstr(line, "ID") && strstr(line, "Name") && strstr(line, "Programme"))
+            break;
+    }
+
+    // Overwrite old line with new line
+    while (fgets(line, sizeof(line), fp)) {
+
+        char rec_id[ID_LEN + 1];
+        sscanf(line, "%7s", rec_id);
+
+        
+        if (strcmp(rec_id, id) == 0) {
+            // Write in new line if ID matches
+            fprintf(temp, "%s  %s  %s  %.2f\n", id, new_name, new_prog, new_mark);
+        }
+        else {
+            // Keep original line
+            fputs(line, temp);
+        }
+    }
+
+    // Set pointer of both file to start
+    rewind(fp);
+    rewind(temp);
+
+    // Clear original file by opeining using w+
+    freopen(NULL, "w+", fp);
+
+    // Copy data from temp file to original file
+    while (fgets(line, sizeof(line), temp)) {
+        fputs(line, fp);
+    }
+    
 
     // Ensure changes are saved.
     fflush(fp);
     // Rest pointer to start of file
     rewind(fp);
+    fclose(temp);
 
-    // Success message
+    // Success message and confirmation prompt
     printf("\n=== Record Successfully Updated ===\n");
     printf("ID       : %s\n", id);
     printf("Name     : %s\n", new_name);
