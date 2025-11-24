@@ -38,6 +38,7 @@ int main() {
 		}
 
 		if (!file_opened){
+			//If user choses OPEN 
 			if (strcmp(user_input,"OPEN") == 0) {
 				file_pointer = Open_File(P6_6_filename,"r+");
 				if (file_pointer != NULL) {
@@ -46,43 +47,59 @@ int main() {
 					Copy_File(file_pointer);
 				}
 			} 
+			//If user closes the programme immediately after opening
+			else if(strcmp(user_input, "CLOSE") == 0)
+			{
+				printf("P6_6 Application Closing");
+				return 0;
+			}
+			//Warn user that file has not been opened yet
 			else {
 				printf("File has not been opened yet!\n");
 			}
 		}
 		else {
+			//If user choses SHOW ALL 
 			if (strcmp(user_input, "SHOW ALL") == 0) {
 				show_all(file_pointer);
 			}
+			//If user choses SHOW SUMMARY 
 			else if (strcmp(user_input, "SHOW SUMMARY") == 0) {
 				show_summary(file_pointer);
 			}
+			//If user choses INSERT
 			else if (strcmp(user_input, "INSERT") == 0) {
 				if (!Insert_Record(file_pointer)) {
 					file_saved = false;
 				}
 			}
+			//If user choses QUERY 
 			else if (strcmp(user_input, "QUERY") == 0) {
 				Query_Record(file_pointer);
 			}
+			//If user choses UPDATE
 			else if (strcmp(user_input, "UPDATE") == 0) {
 				if (!update_record(file_pointer)) {
 					file_saved = false;
 				}
 			}
+			//If user choses DELETE 
 			else if (strcmp(user_input, "DELETE") == 0) {
 				if (!delete_record(file_pointer)) {
 					file_saved = false;
 				}
 			}
+			//If user choses SAVE
 			else if (strcmp(user_input, "SAVE") == 0) {
 				//Call save file function
 				Save_File(file_pointer);
 				file_saved = true;
 			}
+			//If user choses BACKUP
 			else if (strcmp(user_input, "BACKUP") == 0) {
 				Backup_File(file_pointer);
 			}
+			//If user choses CLOSE
 			else if (strcmp(user_input, "CLOSE") == 0) {
 				//Check if user has saved file yet before closing
 				if (file_saved == false) {
@@ -98,7 +115,7 @@ int main() {
 					}
 				}
 				else {
-					//Close program if file has been saved 
+					//Close programme if file has been saved 
 					Close_File(file_pointer);
 					goto end_programme;
 				}
