@@ -44,7 +44,7 @@ int main() {
 				if (file_pointer != NULL) {
 					file_opened = true;
 					//Copy file generates a temporary file with the contents of the CMS
-					Copy_File(file_pointer);
+					Create_Temporary_File(file_pointer);
 				}
 			} 
 			//If user closes the programme immediately after opening

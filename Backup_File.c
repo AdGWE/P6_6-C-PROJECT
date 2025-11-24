@@ -73,7 +73,7 @@ free_memory:
 }
 
 
-int Copy_File(FILE* original_file_pointer) {
+int Create_Temporary_File(FILE* original_file_pointer) {
 	char* temp_filename = TEMPORARY_FILE_NAME;
 	char* read_buffer = NULL;
 	int return_code = 0;

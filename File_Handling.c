@@ -23,7 +23,7 @@ int Save_File(FILE *file_pointer) {
 		//Remove old tmp file
 		remove(temp_filename);
 		//Make a new copy, temporary file name defined in copy_file function
-		Copy_File(file_pointer);
+		Create_Temporary_File(file_pointer);
 		
 		printf("File successfully saved!\n");
 		return 0;
