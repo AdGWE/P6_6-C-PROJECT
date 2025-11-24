@@ -39,6 +39,9 @@
     <ClCompile Include="Update.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Delete.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="P6_6-CMS.txt">
@@ -65,6 +68,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Update.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Delete.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

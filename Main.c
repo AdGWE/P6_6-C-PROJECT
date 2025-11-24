@@ -13,14 +13,16 @@
 #include "query.h"
 #include "Update.h"
 #include "Delete.h"
+
+#define MAX_LEN 255
+#define FILE_NAME "P6_6-CMS.txt"
 //Variables
 FILE* file_pointer;
 int main() {
 	//Define variables
-	#define MAX_LEN 255
 	bool file_opened = false, file_saved = true, file_closed = false;
 	char user_input[MAX_LEN + 1];
-	char *P6_6_filename = "P6_6-CMS.txt";
+	char *P6_6_filename = FILE_NAME;
 	
 	//Print plagarism declaration when starting program
 	Print_Declaration();
@@ -40,6 +42,7 @@ int main() {
 				file_pointer = Open_File(P6_6_filename,"r+");
 				if (file_pointer != NULL) {
 					file_opened = true;
+					//Copy file generates a temporary file with the contents of the CMS
 					Copy_File(file_pointer);
 				}
 			} 

@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClCompile Include="Backup_File.c" />
     <ClCompile Include="Declaration.c" />
+    <ClCompile Include="Delete.c" />
     <ClCompile Include="insert.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="query.c" />
@@ -34,6 +35,7 @@
   <ItemGroup>
     <ClInclude Include="Backup_file.h" />
     <ClInclude Include="Declaration.h" />
+    <ClInclude Include="Delete.h" />
     <ClInclude Include="insert.h" />
     <ClInclude Include="query.h" />
     <ClInclude Include="File_Handling.h" />

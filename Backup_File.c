@@ -5,9 +5,11 @@
 #include <time.h>
 #define BUFFER_SIZE 16384 //16 Kilo Bytes
 #define TIME_BUFFER_SIZE 30
+#define BACKUP_NAME "_backup.txt"
+#define TEMPORARY_FILE_NAME "tmp.txt"
 
 int Backup_File(FILE *original_file_pointer) {
-	char *backup_naming_scheme = "_backup.txt";
+	char *backup_naming_scheme = BACKUP_NAME;
 	char *backup_file_name;
 	char *read_buffer = NULL;
 	char formatted_time_string[TIME_BUFFER_SIZE];
@@ -72,7 +74,7 @@ free_memory:
 
 
 int Copy_File(FILE* original_file_pointer) {
-	char* temp_filename = "tmp.txt";
+	char* temp_filename = TEMPORARY_FILE_NAME;
 	char* read_buffer = NULL;
 	int return_code = 0;
 	FILE* copy_file_pointer = NULL;
