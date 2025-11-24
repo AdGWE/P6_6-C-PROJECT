@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 // For string function
 #include <string.h>
@@ -70,6 +70,7 @@ static int read_line(char* buffer, size_t size) {
     return 1;
 }
 
+// Return 1 for any failure, and 0 for success
 int delete_record(FILE* fp) {
     if (fp == NULL) {
         printf("Error: File not opened.\n");
@@ -108,6 +109,7 @@ int delete_record(FILE* fp) {
 
     rewind(fp);
 
+    // Copy anything before header line
     while (fgets(line, sizeof(line), fp)) {
         // Copy header line till field header
         if (strstr(line, "ID") && strstr(line, "Name") && strstr(line, "Programme")) {
@@ -134,23 +136,20 @@ int delete_record(FILE* fp) {
         if (strcmp(rec_id, id) == 0) {
             found = 1;
 
-            // copy rest of the line after ID
-            char copy[LINE_MAX];
-            strcpy(copy, line + ID_LEN);
-
-            char* ptr;
-
-            // Stores current pointer -> end of ID
-            ptr = copy;
-
+            // Extract fields from line
+            char* ptr = line + ID_LEN;
             // Skip spaces after ID
             while (*ptr == ' ') {
                 ptr++;
             }
 
+            // copy rest of the line after ID
+            char copy[LINE_MAX];
+            strcpy(copy, ptr);
+
             // Extract value of mark
              // Find last occurence of space, which is always before mark
-            char* last_space = strrchr(ptr, ' ');
+            char* last_space = strrchr(copy, ' ');
             // Convert string after last space to float
             // Cut value of mark from record line
             del_mark = atof(last_space + 1);
@@ -159,12 +158,12 @@ int delete_record(FILE* fp) {
             // Extract value of programme by searching backwards
              // Split remaining string into name (left) and programme (right)
             char* start_prog = NULL;
-            for (int i = strlen(ptr) - 1; i > 0; i--) {
-                if (ptr[i] == ' ' && ptr[i - 1] == ' ') {
+            for (int i = strlen(copy) - 1; i > 0; i--) {
+                if (copy[i] == ' ' && copy[i - 1] == ' ') {
                     // Terminate name before the two spaces
-                    ptr[i - 1] = '\0';
+                    copy[i - 1] = '\0';
                     // Skip the spaces to find start of programme
-                    start_prog = &ptr[i];
+                    start_prog = &copy[i];
                     // Programme begins at first non-space after position i
                     while (*start_prog == ' ') {
                         start_prog++;
@@ -174,7 +173,7 @@ int delete_record(FILE* fp) {
             }
             // Store extracted fields and trim
             if (start_prog) {
-                strcpy(del_name, ptr);
+                strcpy(del_name, copy);
                 strcpy(del_prog, start_prog);
                 trim(del_name);
                 trim(del_prog);
