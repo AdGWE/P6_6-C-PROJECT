@@ -62,6 +62,60 @@ static int valid_id(const char* string) {
     return 1;
 }
 
+// Allows special characters like hyphen, backslash and full stop.
+static int valid_name(const char* string) {
+    if (!string || string[0] == '\0') {
+        return 0;
+    }
+
+    int has_letter = 0;
+
+    for (size_t i = 0; string[i] != '\0'; i++) {
+        unsigned char c = (unsigned char)string[i];
+
+        if (isalpha(c)) {
+            has_letter = 1;
+        }           
+        else if (isspace(c)) {
+            continue;
+        }          
+        else if (c == '-' || c == '\'' || c == '.') {
+            continue;
+        }
+        else{
+            return 0;
+        }    
+    }
+    return has_letter;
+}
+
+// Allows special characters like hyphen, &, slash and brackets
+static int valid_programme(const char* string) {
+    if (!string || string[0] == '\0') {
+        return 0;
+    }
+
+    int has_letter = 0;
+
+    for (size_t i = 0; string[i] != '\0'; i++) {
+        unsigned char c = (unsigned char)string[i];
+        if (isalpha(c)) {
+            has_letter = 1;
+        }
+        else if (isspace(c)) {
+            continue;
+        }
+        else if (c == '-' || c == '&' || c == '/' ||
+            c == '(' || c == ')') {
+            continue;
+        }
+        else {
+            return 0;
+        }
+    }
+    return has_letter;
+}
+
 // Buffer overflow protection to read line safely from input
 static int read_line(char* buffer, size_t size) {
     if (!fgets(buffer, (int)size, stdin)) {
@@ -204,7 +258,6 @@ int update_record(FILE* fp) {
             if (!start_prog) {
                 printf("Record format corrupted.\n");
                 fclose(temp);
-                rewind(fp);
                 return 1;
             }
 
@@ -215,8 +268,10 @@ int update_record(FILE* fp) {
             trim(old_name);
             trim(old_prog);
 
-            break;
+            continue;
         }
+        // Copy normally if not the record
+        fputs(line, temp);
           
     }
 
@@ -241,60 +296,71 @@ int update_record(FILE* fp) {
     char new_mark_str[50];
     float new_mark;
 
-    printf("\nEnter new name (leave blank to keep existing record): ");
-    read_line(new_name, sizeof(new_name));
-    trim(new_name);
-    if (strlen(new_name) == 0) {
-        strcpy(new_name, old_name);
-    }
 
-    printf("Enter new programme (leave blank to keep existing): ");
-    read_line(new_prog, sizeof(new_prog));
-    trim(new_prog);
-    if (strlen(new_prog) == 0) {
-        strcpy(new_prog, old_prog);
-    }
+    // Get new name
+    while (1) {
+        printf("Enter new name (or KEEP to retain existing): ");
+        read_line(new_name, sizeof(new_name));
+        trim(new_name);
 
-    printf("Enter new mark (0-100, leave blank to keep existing): ");
-    read_line(new_mark_str, sizeof(new_mark_str));
-    trim(new_mark_str);
-    if (strlen(new_mark_str) == 0) {
-        new_mark = old_mark;
-    }
-    // Validate value of mark
-    else if (!parse_mark(new_mark_str, &new_mark)) {
-        printf("Invalid mark.\n");
-        fclose(temp);
-        rewind(fp);
-        return 1;
-    }
-
-
-    // Back to start of file
-    rewind(fp);
-
-    // Skip pre-header and header again in original file
-    while (fgets(line, sizeof(line), fp)) {
-        if (strstr(line, "ID") && strstr(line, "Name") && strstr(line, "Programme"))
+        if (strcmp(new_name, "KEEP") == 0) {
+            strcpy(new_name, old_name);
             break;
+        }
+
+        if (!valid_name(new_name)) {
+            printf("Invalid name.\n");
+            continue;
+        }
+
+        if (strlen(new_name) > MAX_NAME_LEN) {
+            printf("Name too long. Maximum %d character.\n", MAX_NAME_LEN);
+            continue;
+        }
+        break;
     }
 
-    // Overwrite old line with new line
-    while (fgets(line, sizeof(line), fp)) {
+    // Get new programme name
+    while (1) {
+        printf("Enter new programme (or KEEP to retain existing): ");
+        read_line(new_prog, sizeof(new_prog));
+        trim(new_prog);
 
-        char rec_id[ID_LEN + 1];
-        sscanf(line, "%7s", rec_id);
+        if (strcmp(new_prog, "KEEP") == 0) {
+            strcpy(new_prog, old_prog);
+            break;
+        }
 
-        
-        if (strcmp(rec_id, id) == 0) {
-            // Write in new line if ID matches
-            fprintf(temp, "%s  %s  %s  %.2f\n", id, new_name, new_prog, new_mark);
+        if (!valid_programme(new_prog)) {
+            printf("Invalid programme.\n");
+            continue;
         }
-        else {
-            // Keep original line
-            fputs(line, temp);
+
+        if (strlen(new_prog) > MAX_PROG_LEN) {
+            printf("Programme too long. Maximum %d character.\n", MAX_PROG_LEN);
+            continue;
         }
+        break;
     }
+    
+    // Get new mark
+    while (1) {
+        printf("Enter new mark (0-100, or KEEP to retain existing): ");
+        read_line(new_mark_str, sizeof(new_mark_str));
+        trim(new_mark_str);
+
+        if (strcmp(new_mark_str, "KEEP") == 0) {
+            new_mark = old_mark;
+            break;
+        }
+        if (!parse_mark(new_mark_str, &new_mark)) {
+            printf("Invalid mark.\n");
+            continue;
+        }
+        break;
+    }
+
+    fprintf(temp, "%s  %s  %s  %.2f\n", id, new_name, new_prog, new_mark);
 
     // Set pointer of both file to start
     rewind(fp);
