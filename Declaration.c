@@ -2,7 +2,7 @@
 
 int Print_Declaration() {
 	printf("Declaration\n");
-	printf("SITs policy on copying does not allow the students to copy source code as well as assessment solutions from another person AI or other places.It is the students’ responsibility to guarantee that their assessment solutions are their own work.Meanwhile, the students must also ensure that their work is not accessible by others.Where such plagiarism is detected, both of the assessments involved will receive ZERO mark.\n");
+	printf("SITs policy on copying does not allow the students to copy source code as well as assessment solutions from another person AI or other places.It is the studentsâ€™ responsibility to guarantee that their assessment solutions are their own work.Meanwhile, the students must also ensure that their work is not accessible by others.Where such plagiarism is detected, both of the assessments involved will receive ZERO mark.\n");
 	printf("We hereby declare that :\n");
 	printf("We fully understand and agree to the abovementioned plagiarism policy.\n");
 	printf("We did not copy any code from others or from other places.\n");
@@ -16,6 +16,6 @@ int Print_Declaration() {
 	printf("Ashwin Kavidasan\n");
 	printf("Saranesan So V Saravanan\n");
 	printf("He Yong Jie\n");
-	printf("Date : (please insert the date when you submit your group project).\n");
+	printf("Date : 25 Nov 2025\n");
 	return 0;
 }
