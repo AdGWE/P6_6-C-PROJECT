@@ -2,7 +2,7 @@
 #include <stdio.h>
 // For string function
 #include <string.h>
-// For string validations
+// For to validate string characters
 #include <ctype.h>
 // For memory allocation
 #include <stdlib.h>
@@ -155,7 +155,7 @@ int delete_record(FILE* fp) {
             del_mark = atof(last_space + 1);
             *last_space = '\0';
 
-            // Extract value of programme by searching backwards
+             // Extract value of programme by searching backwards
              // Split remaining string into name (left) and programme (right)
             char* start_prog = NULL;
             for (int i = strlen(copy) - 1; i > 0; i--) {
@@ -181,8 +181,8 @@ int delete_record(FILE* fp) {
             continue;
         }
 
-        // Copy the rest of the records
-        fputs(line, temp);
+     // Copy the rest of the records
+     fputs(line, temp);
     }
 
     // Back to main menu if record don't exits
@@ -229,7 +229,7 @@ int delete_record(FILE* fp) {
         fputs(line, fp);
     }
         
-
+    // Write buffer data to drive
     fflush(fp);
     rewind(fp);
     fclose(temp);
