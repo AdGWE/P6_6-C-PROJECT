@@ -2,7 +2,7 @@
 #include <stdio.h>
 // For string function
 #include <string.h>
-// For string validations
+// For to validate string characters
 #include <ctype.h>
 // For memory allocation
 #include <stdlib.h>
@@ -375,7 +375,7 @@ int update_record(FILE* fp) {
     }
     
 
-    // Ensure changes are saved.
+    // Write buffer data to drive
     fflush(fp);
     // Rest pointer to start of file
     rewind(fp);
